@@ -24,11 +24,35 @@ dataset<- read.table(file = 'original_data.csv', sep = ",", header = TRUE)
 plot(dataset$Average.Covered.Charges,dataset$Average.Total.Payments,
      xlab='mean covered charges', 
      ylab = 'mean total payments',
-     main = 'Relationship in New York')
+     main = 'Relationship in New York',
+     col = rgb(0,.5,.5, .3))
 model <- lm(Average.Total.Payments~Average.Covered.Charges, data = dataset)
 abline(model, lwd = 1, col = "red")
+legend("topright", pch = 1, col = 'red', legend = "trend line")
 
 #### save plot1 to file
 dev.copy(png, file = "Plot1.png")
 dev.off()
+
+#### make plot2
+defi<-unique(dataset$DRG.Definition)
+state<-unique(dataset$Provider.State)
+par(mfrow=c(length(defi),length(state)),mar=c(1,1,1,1),oma = c(0, 0, 3, 0))
+for(x in defi){
+  for(y in state){
+    tempdata<-subset(x=dataset,
+                     subset=(DRG.Definition== x)&(Provider.State== y),
+                     select=c(Average.Covered.Charges,Average.Total.Payments)
+    )
+    plot(tempdata$Average.Covered.Charges,
+         tempdata$Average.Total.Payments,
+         col = rgb(0,.5,.5, .3))
+    model <- lm(Average.Total.Payments~Average.Covered.Charges, data = tempdata)
+    abline(model, lwd = 1, col = "red")
+  }
+}
+mtext("Page Title", side = 3, outer = TRUE)
+
+
+
 
