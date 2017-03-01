@@ -1,8 +1,9 @@
 setwd("/Users/freefrog/Studing/DataScience/gitrepo/ReproducibleResearch/week4")
 suppressMessages(library(knitr))
+suppressMessages(library(dplyr))
 library(knitr)
 library(dplyr)
-library(ggplot2)
+
 
 rm(list = ls())
 
@@ -28,15 +29,8 @@ TableStormData <- tbl_df(stormData)
 SumStormData <- 
         select(TableStormData, EVTYPE, FATALITIES, INJURIES) %>%
         group_by(EVTYPE) %>% 
-        summarize_all(.funs=sum)
-
-
-SumStormData <- 
-        select(TableStormData, EVTYPE, FATALITIES, INJURIES) %>%
-        group_by(EVTYPE) %>% 
         summarize(sum=sum(FATALITIES, INJURIES)) %>%
         arrange(desc(sum))
-
 Top10Data<-SumStormData[1:10,]
 
 #### plot the data
@@ -74,7 +68,7 @@ CostStormData <-
 Top10Cost<-CostStormData[1:10,]
 
 #### plot the data
-barplot(Top10Data$sum,density = 20,names.arg=Top10Data$EVTYPE)
+barplot(Top10Cost$sum,density = 20,names.arg=Top10Cost$EVTYPE)
 
 ## RESULT
 
